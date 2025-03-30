@@ -1,4 +1,4 @@
-# mar/30/2025 13:18:43 by RouterOS 6.49.18
+# mar/30/2025 13:59:38 by RouterOS 6.49.18
 # software id = YM5Y-DLWX
 #
 # model = RB941-2nD
@@ -12,6 +12,14 @@ set [ find default-name=ether1 ] name=ether1-wan1
 set [ find default-name=ether2 ] name=ether2-wan2
 /interface wireless security-profiles
 set [ find default=yes ] supplicant-identity=MikroTik
+/user group
+add name=helpdesk-l3 policy="local,telnet,ssh,reboot,read,write,test,winbox,pa\
+    ssword,web,sniff,sensitive,api,romon,tikapp,!ftp,!policy,!dude"
+add name=helpdesk-l2 policy="local,telnet,ssh,reboot,read,test,winbox,password\
+    ,web,sniff,sensitive,api,romon,tikapp,!ftp,!write,!policy,!dude"
+add name=helpdesk-l1 policy="reboot,test,web,!local,!telnet,!ssh,!ftp,!read,!w\
+    rite,!policy,!winbox,!password,!sniff,!sensitive,!api,!romon,!dude,!tikapp\
+    " skin=helpdesk
 /interface bridge port
 add bridge=bridge-lan interface=ether3
 add bridge=bridge-lan interface=ether4
