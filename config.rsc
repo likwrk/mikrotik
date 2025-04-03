@@ -1,4 +1,4 @@
-# mar/31/2025 13:14:27 by RouterOS 6.49.18
+# apr/03/2025 20:40:17 by RouterOS 6.49.18
 # software id = YM5Y-DLWX
 #
 # model = RB941-2nD
@@ -36,10 +36,13 @@ add interface=bridge-lan list=LAN
 /ip address
 add address=192.168.100.115/24 interface=ether1-wan1 network=192.168.100.0
 add address=192.168.88.1/24 interface=bridge-lan network=192.168.88.0
+/ip dhcp-client
+add default-route-distance=2 disabled=no interface=ether2-wan2
 /ip dns
 set allow-remote-requests=yes servers=8.8.8.8
 /ip firewall nat
 add action=masquerade chain=srcnat out-interface=ether1-wan1
+add action=masquerade chain=srcnat out-interface=ether2-wan2
 /ip route
 add distance=1 gateway=192.168.100.1
 /ip service
