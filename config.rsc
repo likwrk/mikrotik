@@ -1,4 +1,4 @@
-# apr/03/2025 20:47:18 by RouterOS 6.49.18
+# apr/03/2025 21:41:20 by RouterOS 6.49.18
 # software id = YM5Y-DLWX
 #
 # model = RB941-2nD
@@ -15,6 +15,11 @@ add name=LAN
 add name=WAN
 /interface wireless security-profiles
 set [ find default=yes ] supplicant-identity=MikroTik
+/ip pool
+add name=pool-dhcp-lan ranges=192.168.88.101-192.168.88.150
+/ip dhcp-server
+add address-pool=pool-dhcp-lan disabled=no interface=bridge-lan lease-time=1d \
+    name=server-lan
 /user group
 add name=helpdesk-l3 policy="local,telnet,ssh,reboot,read,write,test,winbox,pa\
     ssword,web,sniff,sensitive,api,romon,tikapp,!ftp,!policy,!dude"
@@ -38,6 +43,12 @@ add address=192.168.100.115/24 interface=ether1-wan1 network=192.168.100.0
 add address=192.168.88.1/24 interface=bridge-lan network=192.168.88.0
 /ip dhcp-client
 add default-route-distance=2 disabled=no interface=ether2-wan2
+/ip dhcp-server lease
+add address=192.168.88.101 mac-address=10:D7:C6:F6:F6:21 server=server-lan
+add address=192.168.88.2 mac-address=10:D7:C6:F6:F6:22 server=server-lan
+/ip dhcp-server network
+add address=192.168.88.0/24 dns-server=192.168.88.1 domain=int gateway=\
+    192.168.88.1
 /ip dns
 set allow-remote-requests=yes servers=8.8.8.8,1.1.1.1
 /ip firewall nat
