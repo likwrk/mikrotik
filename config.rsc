@@ -45,7 +45,7 @@ add address=192.168.88.1/24 interface=bridge-lan network=192.168.88.0
 add default-route-distance=2 disabled=no interface=ether2-wan2
 /ip dhcp-server lease
 add address=192.168.88.101 mac-address=10:D7:C6:F6:F6:21 server=server-lan
-add address=192.168.88.2 mac-address=10:D7:C6:F6:F6:22 server=server-lan
+add address=192.168.88.102 mac-address=10:D7:C6:F6:F6:22 server=server-lan
 /ip dhcp-server network
 add address=192.168.88.0/24 dns-server=192.168.88.1 domain=int gateway=\
     192.168.88.1
