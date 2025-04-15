@@ -1,4 +1,4 @@
-# apr/15/2025 15:29:46 by RouterOS 6.49.18
+# apr/15/2025 17:44:29 by RouterOS 6.49.18
 # software id = YM5Y-DLWX
 #
 # model = RB941-2nD
@@ -55,7 +55,7 @@ set allow-remote-requests=yes servers=8.8.8.8,1.1.1.1
 add action=masquerade chain=srcnat out-interface=ether1-wan1
 add action=masquerade chain=srcnat out-interface=ether2-wan2
 /ip route
-add distance=1 gateway=10.11.12.1
+add check-gateway=ping distance=1 gateway=10.11.12.1
 /ip service
 set telnet disabled=yes
 set ftp disabled=yes
