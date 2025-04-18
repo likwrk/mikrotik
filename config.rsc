@@ -1,4 +1,4 @@
-# apr/15/2025 17:44:29 by RouterOS 6.49.18
+# apr/18/2025 11:22:59 by RouterOS 6.49.18
 # software id = YM5Y-DLWX
 #
 # model = RB941-2nD
@@ -10,6 +10,8 @@ set [ find default-name=wlan1 ] ssid=MikroTik
 /interface ethernet
 set [ find default-name=ether1 ] name=ether1-wan1
 set [ find default-name=ether2 ] name=ether2-wan2
+/interface l2tp-server
+add name=l2tp-in-filial1 user=""
 /interface list
 add name=LAN
 add name=WAN
@@ -17,9 +19,13 @@ add name=WAN
 set [ find default=yes ] supplicant-identity=MikroTik
 /ip pool
 add name=pool-dhcp-lan ranges=192.168.88.101-192.168.88.150
+add name=pool-vpn ranges=172.16.1.101-172.16.1.150
 /ip dhcp-server
 add address-pool=pool-dhcp-lan disabled=no interface=bridge-lan lease-time=1d \
     name=server-lan
+/ppp profile
+add change-tcp-mss=yes local-address=172.16.100.100 name=\
+    profile-client-to-site remote-address=pool-vpn
 /user group
 add name=helpdesk-l3 policy="local,telnet,ssh,reboot,read,write,test,winbox,pa\
     ssword,web,sniff,sensitive,api,romon,tikapp,!ftp,!policy,!dude"
@@ -34,6 +40,8 @@ add bridge=bridge-lan interface=ether4
 add bridge=bridge-lan interface=wlan1
 /ip neighbor discovery-settings
 set discover-interface-list=LAN
+/interface l2tp-server server
+set authentication=mschap2 enabled=yes ipsec-secret=ipsec use-ipsec=required
 /interface list member
 add interface=ether1-wan1 list=WAN
 add interface=ether2-wan2 list=WAN
@@ -61,6 +69,9 @@ set telnet disabled=yes
 set ftp disabled=yes
 set api disabled=yes
 set api-ssl disabled=yes
+/ppp secret
+add name=sotrudnik1 password=password profile=profile-client-to-site service=\
+    l2tp
 /system clock
 set time-zone-autodetect=no time-zone-name=Europe/Moscow
 /system identity
