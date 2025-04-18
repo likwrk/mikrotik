@@ -1,4 +1,4 @@
-# apr/18/2025 11:22:59 by RouterOS 6.49.18
+# apr/18/2025 11:31:42 by RouterOS 6.49.18
 # software id = YM5Y-DLWX
 #
 # model = RB941-2nD
@@ -11,7 +11,7 @@ set [ find default-name=wlan1 ] ssid=MikroTik
 set [ find default-name=ether1 ] name=ether1-wan1
 set [ find default-name=ether2 ] name=ether2-wan2
 /interface l2tp-server
-add name=l2tp-in-filial1 user=""
+add name=l2tp-in-filial1 user=filial1
 /interface list
 add name=LAN
 add name=WAN
@@ -64,6 +64,7 @@ add action=masquerade chain=srcnat out-interface=ether1-wan1
 add action=masquerade chain=srcnat out-interface=ether2-wan2
 /ip route
 add check-gateway=ping distance=1 gateway=10.11.12.1
+add distance=1 dst-address=192.168.200.0/24 gateway=172.16.100.2
 /ip service
 set telnet disabled=yes
 set ftp disabled=yes
@@ -72,6 +73,8 @@ set api-ssl disabled=yes
 /ppp secret
 add name=sotrudnik1 password=password profile=profile-client-to-site service=\
     l2tp
+add local-address=172.16.100.1 name=filial1 password=password remote-address=\
+    172.16.100.2 service=l2tp
 /system clock
 set time-zone-autodetect=no time-zone-name=Europe/Moscow
 /system identity
