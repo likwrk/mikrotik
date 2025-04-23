@@ -1,4 +1,4 @@
-# apr/23/2025 16:27:05 by RouterOS 6.49.18
+# apr/23/2025 17:01:28 by RouterOS 6.49.18
 # software id = YM5Y-DLWX
 #
 # model = RB941-2nD
@@ -88,6 +88,14 @@ add action=src-nat chain=srcnat comment=WAN1 out-interface=ether1-wan1 \
     to-addresses=10.11.12.115
 add action=src-nat chain=srcnat comment=WAN2 out-interface=ether2-wan2 \
     to-addresses=192.168.10.149
+add action=dst-nat chain=dstnat comment="Port-forwarding server 1" dst-port=\
+    443 in-interface-list=WAN protocol=tcp to-addresses=192.168.88.11 \
+    to-ports=443
+add action=dst-nat chain=dstnat comment="Port-forwarding server 2" dst-port=\
+    444 in-interface-list=WAN protocol=tcp to-addresses=192.168.88.12 \
+    to-ports=443
+add action=redirect chain=dstnat comment="DNS redirect" dst-port=53 protocol=\
+    udp
 /ip route
 add check-gateway=ping distance=1 gateway=10.11.12.1
 add distance=1 dst-address=192.168.200.0/24 gateway=172.16.100.2
