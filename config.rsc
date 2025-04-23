@@ -1,4 +1,4 @@
-# apr/23/2025 15:17:33 by RouterOS 6.49.18
+# apr/23/2025 16:27:05 by RouterOS 6.49.18
 # software id = YM5Y-DLWX
 #
 # model = RB941-2nD
@@ -84,8 +84,10 @@ add action=reject chain=forward dst-address-list=social-networks protocol=tcp \
     reject-with=tcp-reset src-address-list=staff-no-social time=\
     9h-18h,mon,tue,wed,thu,fri
 /ip firewall nat
-add action=masquerade chain=srcnat out-interface=ether1-wan1
-add action=masquerade chain=srcnat out-interface=ether2-wan2
+add action=src-nat chain=srcnat comment=WAN1 out-interface=ether1-wan1 \
+    to-addresses=10.11.12.115
+add action=src-nat chain=srcnat comment=WAN2 out-interface=ether2-wan2 \
+    to-addresses=192.168.10.149
 /ip route
 add check-gateway=ping distance=1 gateway=10.11.12.1
 add distance=1 dst-address=192.168.200.0/24 gateway=172.16.100.2
