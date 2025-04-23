@@ -1,4 +1,4 @@
-# apr/20/2025 10:38:51 by RouterOS 6.49.18
+# apr/23/2025 15:17:33 by RouterOS 6.49.18
 # software id = YM5Y-DLWX
 #
 # model = RB941-2nD
@@ -59,12 +59,19 @@ add address=192.168.88.0/24 dns-server=192.168.88.1 domain=int gateway=\
     192.168.88.1
 /ip dns
 set allow-remote-requests=yes servers=8.8.8.8,1.1.1.1
+/ip firewall address-list
+add address=fb.com list=social-networks
+add address=ok.ru list=social-networks
+add address=facebook.com list=social-networks
+add address=vk.com list=social-networks
+add address=192.168.88.101 list=staff-no-social
+add address=192.168.88.102 list=staff-no-social
 /ip firewall filter
 add action=accept chain=input connection-state=established,related
 add action=drop chain=input connection-state=invalid
 add action=accept chain=input protocol=icmp
 add action=accept chain=input dst-port=22,8291 protocol=tcp src-address-list=\
-    wam-white-list
+    wan-white-list
 add action=accept chain=input dst-port=1701 protocol=udp
 add action=accept chain=input dst-port=500,4500 protocol=udp
 add action=accept chain=input protocol=ipsec-esp
@@ -73,6 +80,9 @@ add action=accept chain=forward connection-state=established,related
 add action=drop chain=forward connection-state=invalid
 add action=drop chain=forward connection-nat-state=!dstnat in-interface-list=\
     WAN
+add action=reject chain=forward dst-address-list=social-networks protocol=tcp \
+    reject-with=tcp-reset src-address-list=staff-no-social time=\
+    9h-18h,mon,tue,wed,thu,fri
 /ip firewall nat
 add action=masquerade chain=srcnat out-interface=ether1-wan1
 add action=masquerade chain=srcnat out-interface=ether2-wan2
