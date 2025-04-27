@@ -1,4 +1,4 @@
-# apr/23/2025 17:01:28 by RouterOS 6.49.18
+# apr/27/2025 19:58:10 by RouterOS 6.49.18
 # software id = YM5Y-DLWX
 #
 # model = RB941-2nD
@@ -26,6 +26,14 @@ add address-pool=pool-dhcp-lan disabled=no interface=bridge-lan lease-time=1d \
 /ppp profile
 add change-tcp-mss=yes local-address=172.16.100.100 name=\
     profile-client-to-site remote-address=pool-vpn
+/queue simple
+add dst=ether1-wan1 max-limit=20M/20M name=wan1 target=bridge-lan
+add dst=ether1-wan1 limit-at=2M/2M max-limit=5M/5M name=wan1-staff-no-social \
+    parent=wan1 target=192.168.88.101/32,192.168.88.102/32
+add dst=81.88.86.0/24 max-limit=2M/2M name=wan1-voip parent=wan1 priority=6/6 \
+    target=bridge-lan
+add max-limit=20M/20M name=wan1-other parent=wan1 priority=7/7 target=\
+    bridge-lan
 /user group
 add name=helpdesk-l3 policy="local,telnet,ssh,reboot,read,write,test,winbox,pa\
     ssword,web,sniff,sensitive,api,romon,tikapp,!ftp,!policy,!dude"
@@ -80,6 +88,7 @@ add action=accept chain=forward connection-state=established,related
 add action=drop chain=forward connection-state=invalid
 add action=drop chain=forward connection-nat-state=!dstnat in-interface-list=\
     WAN
+# inactive time
 add action=reject chain=forward dst-address-list=social-networks protocol=tcp \
     reject-with=tcp-reset src-address-list=staff-no-social time=\
     9h-18h,mon,tue,wed,thu,fri
