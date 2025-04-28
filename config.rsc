@@ -1,12 +1,10 @@
-# apr/27/2025 19:58:10 by RouterOS 6.49.18
+# apr/28/2025 09:49:01 by RouterOS 6.49.18
 # software id = YM5Y-DLWX
 #
 # model = RB941-2nD
 # serial number = 9D7409771674
 /interface bridge
 add name=bridge-lan
-/interface wireless
-set [ find default-name=wlan1 ] ssid=MikroTik
 /interface ethernet
 set [ find default-name=ether1 ] name=ether1-wan1
 set [ find default-name=ether2 ] name=ether2-wan2
@@ -17,6 +15,13 @@ add name=LAN
 add name=WAN
 /interface wireless security-profiles
 set [ find default=yes ] supplicant-identity=MikroTik
+add authentication-types=wpa2-psk mode=dynamic-keys name=profile-lan \
+    supplicant-identity="" wpa2-pre-shared-key=password!
+/interface wireless
+set [ find default-name=wlan1 ] band=2ghz-onlyn country=russia2 disabled=no \
+    frequency=auto mode=ap-bridge radio-name=GW-2 security-profile=\
+    profile-lan ssid=GW-2 wireless-protocol=802.11 wmm-support=enabled \
+    wps-mode=disabled
 /ip pool
 add name=pool-dhcp-lan ranges=192.168.88.101-192.168.88.150
 add name=pool-vpn ranges=172.16.1.101-172.16.1.150
@@ -27,7 +32,8 @@ add address-pool=pool-dhcp-lan disabled=no interface=bridge-lan lease-time=1d \
 add change-tcp-mss=yes local-address=172.16.100.100 name=\
     profile-client-to-site remote-address=pool-vpn
 /queue simple
-add dst=ether1-wan1 max-limit=20M/20M name=wan1 target=bridge-lan
+add disabled=yes dst=ether1-wan1 max-limit=20M/10M name=wan1 target=\
+    bridge-lan
 add dst=ether1-wan1 limit-at=2M/2M max-limit=5M/5M name=wan1-staff-no-social \
     parent=wan1 target=192.168.88.101/32,192.168.88.102/32
 add dst=81.88.86.0/24 max-limit=2M/2M name=wan1-voip parent=wan1 priority=6/6 \
@@ -88,7 +94,6 @@ add action=accept chain=forward connection-state=established,related
 add action=drop chain=forward connection-state=invalid
 add action=drop chain=forward connection-nat-state=!dstnat in-interface-list=\
     WAN
-# inactive time
 add action=reject chain=forward dst-address-list=social-networks protocol=tcp \
     reject-with=tcp-reset src-address-list=staff-no-social time=\
     9h-18h,mon,tue,wed,thu,fri
